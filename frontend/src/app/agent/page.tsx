@@ -2,17 +2,19 @@
 
 import { AppSidebar } from "@/components/AppSidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
-import { SearchInput } from "@/components/SearchInput"
 
-export default function HomePage() {
+export default function AgentPage() {
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset style={{ backgroundColor: '#141619' }}>
-        <div className="flex flex-col min-h-screen">
-          <SearchInput />
+        <div className="flex flex-col items-center justify-center min-h-screen">
+          <div className="text-center">
+            <p className="text-gray-400 text-lg">Agent feature coming soon...</p>
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
   )
 }
+
