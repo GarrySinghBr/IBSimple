@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useIngredientSearch } from "@/features/ingredient-search/hooks/useIngredientSearch"
 
 export function SearchInput() {
   const [inputValue, setInputValue] = useState("")
-  const [hasResults, setHasResults] = useState(false)
+  const { search, isLoading, error, data } = useIngredientSearch()
 
   const allExamples = [
     { display: "Apple, Garlic, Onion", value: "Apple, Garlic, Onion" },
@@ -33,6 +34,19 @@ export function SearchInput() {
     setInputValue(example.value)
   }
 
+  const handleSearch = async () => {
+    if (inputValue.trim()) {
+      await search(inputValue)
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSearch()
+    }
+  }
+
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen px-4">
       <div className="w-full max-w-3xl">
@@ -58,6 +72,7 @@ export function SearchInput() {
           <textarea
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Enter ingredients for FODMAP analysis..."
             className="w-full bg-transparent text-white placeholder:text-gray-500 text-base outline-none resize-none min-h-[64px] max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent"
             style={{
@@ -69,14 +84,19 @@ export function SearchInput() {
               target.style.height = 'auto'
               target.style.height = Math.min(target.scrollHeight, 300) + 'px'
             }}
+            disabled={isLoading}
           />
           <div className="flex items-center justify-between mt-4">
-            <div className="text-gray-500 text-sm"></div>
+            <div className="text-gray-500 text-sm">
+              {error && <span className="text-red-400">{error}</span>}
+            </div>
             <button
-              className="text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-80"
+              onClick={handleSearch}
+              disabled={isLoading || !inputValue.trim()}
+              className="text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{ backgroundColor: '#2a2b2e' }}
             >
-              Send
+              {isLoading ? 'Sending...' : 'Send'}
             </button>
           </div>
         </div>
