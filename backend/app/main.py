@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.api.routers import search
 
 api = FastAPI()
 
@@ -10,10 +11,5 @@ api.add_middleware(
     allow_headers=["*"],
 )
 
-@api.get("/")
-def connection():
-    return("Welcome to IBSimple Backend")
-
-@api.post("/search")
-def searchRequest(request: dict):
-    return("Received: " + request.get("ingredients", ""))
+# Include routers
+api.include_router(search.router)
